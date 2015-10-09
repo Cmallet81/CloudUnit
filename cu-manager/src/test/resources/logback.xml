@@ -24,9 +24,9 @@
         </layout>
     </appender>
 
-    <logger name="fr.treeptik" level="error"/>
-    <logger name="fr.treeptik.cloudunit.controller" level="error"/>
-    <logger name="fr.treeptik.cloudunit.controller.SnapshotController" level="debug"/>
+    <logger name="fr.treeptik" level="debug"/>
+<!--     <logger name="fr.treeptik.cloudunit.controller" level="error"/> -->
+<!--     <logger name="fr.treeptik.cloudunit.controller.SnapshotController" level="debug"/> -->
     <logger name="org.springframework" level="warn"/>
     <logger name="net.sf.ehcache" level="error"/>
 

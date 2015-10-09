@@ -325,7 +325,7 @@ public abstract class AbstractSnapshotControllerTestIT
         resultats.andExpect( status().isOk() );
     }
 
-    @Test( )
+    @Test( timeout = 200000 )
     public void test021_CloneAHelloworldApplicationSnapshot()
         throws Exception
     {
@@ -386,6 +386,20 @@ public abstract class AbstractSnapshotControllerTestIT
         resultats =
             mockMvc.perform( post( "/snapshot/clone" ).session( session ).contentType( MediaType.APPLICATION_JSON ).content( jsonString ) ).andDo( print() );
         resultats.andExpect( status().isOk() );
+
+        logger.info( "**************************************" );
+        logger.info( "Start the application : " + applicationName + "cloned" );
+        logger.info( "**************************************" );
+
+        jsonString = "{\"applicationName\":\"" + applicationName + "cloned" + "\"}";
+        resultats =
+            this.mockMvc.perform( post( "/application/start" ).session( session ).contentType( MediaType.APPLICATION_JSON ).content( jsonString ) );
+        resultats.andExpect( status().isOk() );
+
+        logger.info( "**************************************" );
+        logger.info( "Check the contentPage of " + applicationName + "cloned" );
+        logger.info( "**************************************" );
+
         urlToCall = "http://" + applicationName.toLowerCase() + "cloned" + "-johndoe-admin.cloudunit.dev";
         Assert.assertTrue( getUrlContentPage( urlToCall ).contains( "CloudUnit PaaS" ) );
 
@@ -405,21 +419,21 @@ public abstract class AbstractSnapshotControllerTestIT
         resultats.andExpect( status().isOk() );
     }
 
-    @Test( )
+    // @Test( timeout = 200000 )
     public void test022_CloneAMysqlBasedApplicationSnapshot()
         throws Exception
     {
         cloneASnapshotWithApplicationWithModuleAndADeployment( "mysql-5-5", "pizzashop-mysql", "Pizzas" );
     }
 
-    @Test( )
+    // @Test( timeout = 200000 )
     public void test023_CloneAPostGresBasedApplicationSnapshot()
         throws Exception
     {
         cloneASnapshotWithApplicationWithModuleAndADeployment( "postgresql-9-3", "pizzashop-postgres", "Pizzas" );
     }
 
-    @Test( )
+    // @Test( timeout = 200000 )
     public void test024_CloneAMongoBasedApplicationSnapshot()
         throws Exception
     {
@@ -501,6 +515,20 @@ public abstract class AbstractSnapshotControllerTestIT
         resultats =
             mockMvc.perform( post( "/snapshot/clone" ).session( session ).contentType( MediaType.APPLICATION_JSON ).content( jsonString ) ).andDo( print() );
         resultats.andExpect( status().isOk() );
+
+        logger.info( "**************************************" );
+        logger.info( "Start the application : " + applicationName + "cloned" );
+        logger.info( "**************************************" );
+
+        jsonString = "{\"applicationName\":\"" + applicationName + "cloned" + "\"}";
+        resultats =
+            this.mockMvc.perform( post( "/application/start" ).session( session ).contentType( MediaType.APPLICATION_JSON ).content( jsonString ) );
+        resultats.andExpect( status().isOk() );
+
+        logger.info( "**************************************" );
+        logger.info( "Check the contentPage of " + applicationName + "cloned" );
+        logger.info( "**************************************" );
+
         urlToCall = "http://" + applicationName.toLowerCase() + "cloned" + "-johndoe-admin.cloudunit.dev";
         Assert.assertTrue( getUrlContentPage( urlToCall ).contains( contentPage ) );
 
