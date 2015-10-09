@@ -50,6 +50,7 @@ public class PostgreSQLModuleAction
             module.getModuleInfos().get("password"),
             module.getModuleInfos().get("database"),
             module.getApplication().getUser().getPassword(),
+            module.getApplication().getUser().getLogin(),
             databasePassword,
             envExec);
     }

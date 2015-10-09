@@ -779,10 +779,6 @@ public class ModuleServiceImpl
             module.getModuleAction()
                 .updateModuleManager(hipacheRedisUtils);
 
-            //module.setStartDate(new Date());
-            //module.setStatus(Status.START);
-            //module = this.update(module);
-
         } catch (PersistenceException e) {
             module.setStatus(Status.FAIL);
             module = this.saveInDB(module);

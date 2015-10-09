@@ -121,10 +121,12 @@ public class SecurityConfiguration
         http.logout()
             .logoutUrl("/user/logout")
             .logoutSuccessHandler(ajaxLogoutSuccessHandler)
-            .deleteCookies("JSESSIONID", "XSRF-TOKEN").invalidateHttpSession(true).permitAll();
+            .deleteCookies("JSESSIONID", "XSRF-TOKEN", "CU-AUTH").invalidateHttpSession(true).permitAll();
 
         // CSRF protection
+        // enable for any profils
         activateProtectionCRSF(http);
+        // enable for any profils
         disableProtectionCRSF(http);
 
         // Routes security
@@ -139,8 +141,8 @@ public class SecurityConfiguration
             .antMatchers("/snapshot/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
             .antMatchers("/monitoring/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
             .antMatchers("/messages/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-            .antMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN").antMatchers("/user/check",
-            "/nopublic/**").permitAll().and()
+            .antMatchers("/admin/**").hasAnyAuthority("ROLE_ADMIN")
+            .antMatchers("/user/check", "/nopublic/**").permitAll().and()
             .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
 
         if ("true".equals(System.getProperty("httpsOnly"))) {

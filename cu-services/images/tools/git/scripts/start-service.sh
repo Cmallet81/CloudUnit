@@ -25,9 +25,6 @@ fi
 
 if [ ! -f /init-service-ok ]; then
 
-    # variable signalant au manager quels scripts lancer
-    step=start
-
     #################
     # PREMIER APPEL #
     #################
@@ -84,17 +81,6 @@ if [ ! -f /init-service-ok ]; then
     # Utile pour le second appel
     touch /init-service-ok
 fi
-
-#################
-# SECOND APPEL  #
-#################
-if [ -f /init-service-ok ]; then
-    # variable signalant au manager quels scripts lancer
-    step=restart
-    # Redémarrage de openssh et apache
-    echo "restarting"
-fi
-
 
 # Démarrage de rsyslog, ssh et apache
 #rsyslogd

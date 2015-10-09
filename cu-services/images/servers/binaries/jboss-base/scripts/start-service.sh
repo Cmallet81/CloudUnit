@@ -9,6 +9,36 @@ export CU_DATABASE_NAME=$4
 export JAVA_HOME=/cloudunit/java/$5
 export JBOSS_HOME=/cloudunit/binaries
 
+# Database password for Manager
+export MANAGER_DATABASE_PASSWORD=$6
+# To do difference between main and test env
+export ENV_EXEC=$7
+
+# ENVOI NOTIFICATION CHANGEMENT DE STATUS
+if [ $ENV_EXEC = "integration" ];
+then
+    export MYSQL_ENDPOINT=cuplatform_testmysql_1.mysql.cloud.unit
+else
+    export MYSQL_ENDPOINT=cuplatform_mysql_1.mysql.cloud.unit
+fi
+
+pid1=0
+pid2=0
+
+term_handler() {
+  if [ $pid1 -ne 0 ]; then
+    $JBOSS_HOME/bin/jboss-cli.sh -c --user=$user --password=$CU_PASSWORD --command=:shutdown
+	/cloudunit/scripts/waiting-for-shutdown.sh java 30
+	rm -rf /cloudunit/appconf/standalone/logs/*
+	$JAVA_HOME/bin/java -jar /cloudunit/tools/cloudunitAgent-1.0-SNAPSHOT.jar SERVER $MYSQL_ENDPOINT $CU_DATABASE_NAME $CU_USER STOP $MANAGER_DATABASE_PASSWORD
+  fi
+  if [ $pid2 -ne 0 ]; then
+    kill -SIGTERM "$pid2"
+  fi
+  exit 42;
+}
+
+
 if [ ! -f /init-service-ok ]; then
 
 	echo "PREMIER APPEL !!"
@@ -18,7 +48,6 @@ if [ ! -f /init-service-ok ]; then
 	ln -s /cloudunit/appconf/standalone.conf /cloudunit/binaries/bin/standalone.conf
 
 	# variable signalant au manager quels scripts lancer
-	step=start
 	#################
 	# PREMIER APPEL #
 	#################
@@ -53,13 +82,6 @@ if [ ! -f /init-service-ok ]; then
 
 	# Fin initialisation
 	touch /init-service-ok
-
-else
-	echo "SECOND APPEL !!"
-
-	# variable signalant au manager quels scripts lancer
-	step=restart
-
 fi
 
 # Le montage /cloudunit n'appartient qu'à l'utilisateur créé
@@ -67,25 +89,27 @@ chown -R $CU_USER:$CU_USER /cloudunit
 
 # Lancement de ssh et jboss
 /usr/sbin/sshd
+until [ "`nc -z localhost 22 && echo $?`" -eq "0" ];
+do
+	echo "\nWaiting for sshd process to start"
+	sleep 1
+done
+
 su - $CU_USER -c "$JBOSS_HOME/bin/standalone.sh -P=/etc/environment -Djboss.bind.address.management=0.0.0.0 -Djboss.bind.address=0.0.0.0&"
 
 # test du démarrage de jboss
 /cloudunit/scripts/test-jboss-start.sh
 
+$JAVA_HOME/bin/java -jar /cloudunit/tools/cloudunitAgent-1.0-SNAPSHOT.jar SERVER $MYSQL_ENDPOINT $CU_DATABASE_NAME $CU_USER START $MANAGER_DATABASE_PASSWORD
 
-# Attente du démarrage du processus sshd pour confirmer au manager
-RETURN=1
-until [ "$RETURN" -eq "0" ];
+# The sshd pid could be double : father and son
+pid1=`pidof sshd | awk '{if ($2) {print $2;} else {print $1}}'`
+pid2=`pidof java`
+
+# wait indefinetely
+while true
 do
-	nc -z localhost 22
-	RETURN=$?
-	echo -n "\nwaiting for sshd process start";
-	sleep 1
+  tail -f /dev/null & wait ${!}
 done
-
-# ENVOIE DE REST AU MANAGER 
-# /!\ sale le CU_DATABASE_NAME est utilisé pour renseigner le nom de l'appli
-
-/cloudunit/java/jdk1.7.0_55/bin/java -jar /cloudunit/tools/cloudunitAgent-1.0-SNAPSHOT.jar SERVER cuplatform_mysql_1.mysql.cloud.unit $CU_DATABASE_NAME $CU_USER START
 
 tailf /var/log/faillog

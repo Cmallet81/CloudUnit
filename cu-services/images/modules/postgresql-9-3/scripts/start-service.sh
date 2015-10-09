@@ -7,6 +7,18 @@ export CU_DATABASE_NAME=$3
 export CU_ROOT_PASSWORD=$4
 export CU_SSH_USER=$5
 
+# Database password for Manager
+export MANAGER_DATABASE_PASSWORD=$6
+# To do difference between main and test env
+export ENV_EXEC=$7
+
+if [ $ENV_EXEC = "integration" ];
+then
+    export MYSQL_ENDPOINT=cuplatform_testmysql_1.mysql.cloud.unit
+else
+    export MYSQL_ENDPOINT=cuplatform_mysql_1.mysql.cloud.unit
+fi
+
 ## Si l'initialisation a été déja faite, il faut démarrer Postgres
 if [ ! -f /init-service-ok ]; then
 
@@ -17,7 +29,7 @@ if [ ! -f /init-service-ok ]; then
 
 	useradd $CU_SSH_USER && echo "$CU_SSH_USER:$CU_ROOT_PASSWORD" | chpasswd 
 
-	## TODO : A SUPPRIMER QUAND ON PASSERA EN PRODUCTION MODE PUBLIC
+	## TODO : comment
 	echo "root:$CU_ROOT_PASSWORD" | chpasswd
 
 	chmod 600 -R /etc/ssh
@@ -30,7 +42,7 @@ if [ ! -f /init-service-ok ]; then
 	#Ajout du Shell à l'utilisateur
 	usermod -s /bin/bash $CU_SSH_USER
 
-	## TODO : voir à quoi cela sert, je comprends pas...
+	## TODO : comment
 	cp /root/.bashrc $CU_USER_HOME
 	cp /root/.profile $CU_USER_HOME
 
@@ -45,9 +57,10 @@ if [ ! -f /init-service-ok ]; then
 
 	sed -i -e"s:deny from all:# deny from all:g" /etc/apache2/conf.d/phppgadmin
 	sed -i -e"s:# allow from all:allow from all:g" /etc/apache2/conf.d/phppgadmin
+
+	/etc/init.d/postgresql start
 	/usr/sbin/apachectl start
-	su - postgres -c "/usr/lib/postgresql/9.3/bin/postgres -D /var/lib/postgresql/9.3/main -c config_file=/etc/postgresql/9.3/main/postgresql.conf"	&
-	
+
 	## SURTOUT NE PAS SUPPRIMER LA TEMPO !
 	sleep 5
 	## Création du compte généré dynamiquement côté Java
@@ -56,22 +69,33 @@ if [ ! -f /init-service-ok ]; then
 	su - postgres -c "createdb -O $CU_USER $CU_DATABASE_NAME"
 	
 	touch /init-service-ok
-	## Indispensable car on a lancé en BackGround PostGres
-
-	# ENVOIE DE REST AU MANAGER 
-	# /!\ sale le CU_DATABASE_NAME est utilisé pour renseigner le nom de l'appli
-	/cloudunit/java/jdk1.7.0_55/bin/java -jar /cloudunit/tools/cloudunitAgent-1.0-SNAPSHOT.jar MODULE cuplatform_mysql_1.mysql.cloud.unit $HOSTNAME START
-	tail -f /init-service-ok
-
 else 
-    mount /dev/pts
-	/usr/sbin/sshd &
-	/usr/sbin/apachectl start &
-	su - postgres -c "/usr/lib/postgresql/9.3/bin/postgres -D /var/lib/postgresql/9.3/main -c config_file=/etc/postgresql/9.3/main/postgresql.conf"
-	echo "avant curl"
-	# ENVOIE DE REST AU MANAGER 
-	# /!\ sale le CU_DATABASE_NAME est utilisé pour renseigner le nom de l'appli
-	/cloudunit/java/jdk1.7.0_55/bin/java -jar /cloudunit/tools/cloudunitAgent-1.0-SNAPSHOT.jar MODULE cuplatform_mysql_1.mysql.cloud.unit $HOSTNAME START
-	echo "après curl"
-	tail -f /init-service-ok		
-fi 
+    # mount /dev/pts
+	/usr/sbin/sshd
+	/etc/init.d/postgresql start
+	/usr/sbin/apachectl start
+fi
+
+RETURN=1
+# Attente du démarrage du processus sshd pour confirmer au manager
+until [ "$RETURN" -eq "0" ];
+do
+	echo -n -e  "\nWaiting for ssh\n"
+	nc -z localhost 22
+	RETURN=$?
+	sleep 1
+done
+
+# Attente du démarrage de postgre
+RETURN=1
+until [ "$RETURN" -eq "0" ];
+do
+	nc -z localhost 5432
+	RETURN=$?
+	echo -n -e "\nwaiting for postgre to start"
+	sleep 1
+done
+
+/cloudunit/java/jdk1.7.0_55/bin/java -jar /cloudunit/tools/cloudunitAgent-1.0-SNAPSHOT.jar MODULE $MYSQL_ENDPOINT $HOSTNAME START $MANAGER_DATABASE_PASSWORD
+
+tail -f /init-service-ok

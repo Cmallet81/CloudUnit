@@ -343,6 +343,42 @@ public abstract class AbstractModuleControllerTestIT extends TestCase {
         resultats.andExpect(status().isOk());
     }
 
+    @Test
+    public void test30_AddModuleThenRestart() throws Exception {
+        logger.info("Create an application, add a " + module + " modules, restart");
+
+        // create an application server
+        String jsonString = "{\"applicationName\":\"" + applicationName + "\", \"serverName\":\"" + server + "\"}";
+        ResultActions resultats = mockMvc.perform(post("/application").session(session).contentType(MediaType.APPLICATION_JSON).content(jsonString));
+        resultats.andExpect(status().isOk());
+
+        // verify if app exists
+        resultats = mockMvc.perform(get("/application/" + applicationName).session(session).contentType(MediaType.APPLICATION_JSON));
+        resultats.andExpect(jsonPath("name").value(applicationName.toLowerCase()));
+
+        // add a first module
+        jsonString = "{\"applicationName\":\"" + applicationName + "\", \"imageName\":\"" + module + "\"}";
+        resultats = mockMvc.perform(post("/module")
+            .session(session)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(jsonString));
+        resultats.andExpect(status().isOk());
+
+        // Expected values
+        String module1 = "johndoe-" + applicationName.toLowerCase() + "-" + module + "-1";
+        String gitModule = "johndoe-" + applicationName.toLowerCase() + "-git-1";
+        String managerExpected1 = "http://" + managerPrefix + "1-" + applicationName.toLowerCase() + "-johndoe-admin.cloudunit.dev/" + managerSuffix;
+
+        // Stop the application
+        jsonString = "{\"applicationName\":\"" + applicationName + "\"}";
+        resultats = mockMvc.perform(post("/application/stop").session(session).contentType(MediaType.APPLICATION_JSON).content(jsonString));
+        resultats.andExpect(status().isOk());
+
+        // Start the application
+        jsonString = "{\"applicationName\":\"" + applicationName + "\"}";
+        resultats = mockMvc.perform(post("/application/stop").session(session).contentType(MediaType.APPLICATION_JSON).content(jsonString));
+        resultats.andExpect(status().isOk());
+    }
 
 
 }

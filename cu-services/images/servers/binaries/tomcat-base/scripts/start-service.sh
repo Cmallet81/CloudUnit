@@ -100,7 +100,6 @@ else
         chown -R $1:$1 /cloudunit
 fi
 
-
 # Attente du démarrage du processus sshd pour confirmer au manager
 /usr/sbin/sshd
 until [ "`nc -z localhost 22 && echo $?`" -eq "0" ];

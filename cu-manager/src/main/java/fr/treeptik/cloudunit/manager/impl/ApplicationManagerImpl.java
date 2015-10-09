@@ -91,22 +91,19 @@ public class ApplicationManagerImpl
         // Recopy ssh key and update redis
         applicationService.postStart(application, application.getUser());
 
-        int counter = 0;
-        while (++counter < 60) {
-            boolean allStarted = true;
-            // All modules must be started before application
-            for (Module module : application.getModules()) {
-                module = moduleService.findById(module.getId());
-                while (!module.getStatus().equals(Status.START)) {
-                    allStarted = false;
+        // Wait for the module has a status START (set by shell agent)
+        for (Module module : application.getModules()) {
+            int counter = 0;
+            while (!module.getStatus().equals(Status.START)) {
+                if (counter == 60) {
+                    break;
                 }
-            }
-            if (allStarted)
-                break;
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                // ignore
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                }
+                module = moduleService.findById(module.getId());
+                counter++;
             }
         }
 
@@ -135,7 +132,7 @@ public class ApplicationManagerImpl
             for (Server server : application.getServers()) {
                 int counter = 0;
                 while (!server.getStatus().equals(Status.START)) {
-                    if (counter == 60) {
+                    if (counter == 600) {
                         break;
                     }
                     try {
@@ -150,27 +147,26 @@ public class ApplicationManagerImpl
             // Recopy ssh key and update redis
             applicationService.postStart(application, application.getUser());
 
-            int counter = 0;
-            while (counter < 60) {
-                boolean allStarted = true;
-                // All modules must be started before application
-                for (Module module : application.getModules()) {
-                    module = moduleService.findById(module.getId());
-                    while (!module.getStatus().equals(Status.START)) {
-                        allStarted = false;
+            // Wait for the module has a status START (set by shell agent)
+            for (Module module : application.getModules()) {
+                int counter = 0;
+                while (!module.getStatus().equals(Status.START)) {
+                    if (counter == 600) {
+                        break;
                     }
-                }
-                if (allStarted)
-                    break;
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                    }
+                    module = moduleService.findById(module.getId());
+                    counter++;
                 }
             }
 
             applicationService.setStatus(application, Status.START);
 
         } catch (ServiceException e) {
+            logger.error(application.toString(), e);
             applicationService.setStatus(application, Status.FAIL);
         }
     }

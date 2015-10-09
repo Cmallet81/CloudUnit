@@ -8,6 +8,17 @@ export CU_ROOT_PASSWORD=$4
 export CU_REST_IP=$5
 export CU_USERNAME_SSH=$6
 
+# Database password for Manager
+export MANAGER_DATABASE_PASSWORD=$7
+# To do difference between main and test env
+export ENV_EXEC=$8
+
+if [ $ENV_EXEC = "integration" ];
+then
+    export MYSQL_ENDPOINT=cuplatform_testmysql_1.mysql.cloud.unit
+else
+    export MYSQL_ENDPOINT=cuplatform_mysql_1.mysql.cloud.unit
+fi
 
 if [ ! -f /cloudunit/database/init-service-ok ]; then
 
@@ -68,6 +79,6 @@ do
 	sleep 1
 done
 
-/cloudunit/java/jdk1.7.0_55/bin/java -jar /cloudunit/tools/cloudunitAgent-1.0-SNAPSHOT.jar MODULE cuplatform_mysql_1.mysql.cloud.unit $HOSTNAME START
+/cloudunit/java/jdk1.7.0_55/bin/java -jar /cloudunit/tools/cloudunitAgent-1.0-SNAPSHOT.jar MODULE $MYSQL_ENDPOINT $HOSTNAME START $MANAGER_DATABASE_PASSWORD
 
 tailf /mongo/mongo.log

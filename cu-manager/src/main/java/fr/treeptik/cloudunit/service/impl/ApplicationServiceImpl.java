@@ -599,9 +599,8 @@ public class ApplicationServiceImpl
                 try {
                     module = moduleService.startModule(module);
                 } catch (ServiceException e) {
-                    logger.error("ApplicationService Error : failed to start "
-                        + application.getName() + " : " + e);
-                    e.printStackTrace();
+                    logger.error("failed to start "
+                        + application.toString(), e);
                 }
             }
             List<Server> servers = application.getServers();
