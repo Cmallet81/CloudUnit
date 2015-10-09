@@ -12,5 +12,5 @@ do
 	image=`echo $line | cut -d" " -f 1`
 	repository=`echo $line | cut -d" " -f 2`
 	echo -e "\n Tagging image $image:$GIT_TAG."
-	dockerhub-tag set $image $GIT_TAG  $GIT_TAG cu-services/$repository
+	dockerhub-tag add $image $GIT_TAG  $GIT_TAG cu-services/$repository
 done < cu-images
