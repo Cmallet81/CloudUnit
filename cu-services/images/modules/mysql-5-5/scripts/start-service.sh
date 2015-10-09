@@ -12,7 +12,7 @@ export MANAGER_DATABASE_PASSWORD=$7
 # To do difference between main and test env
 export ENV_EXEC=$8
 
-if [ $ENV_EXEC="integration" ];
+if [ $ENV_EXEC = "integration" ];
 then
     export MYSQL_ENDPOINT=cuplatform_testmysql_1.mysql.cloud.unit
 else

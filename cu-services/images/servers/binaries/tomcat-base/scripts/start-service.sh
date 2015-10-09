@@ -16,7 +16,7 @@ export MANAGER_DATABASE_PASSWORD=$6
 export ENV_EXEC=$7
 
 # ENVOI NOTIFICATION CHANGEMENT DE STATUS
-if [ $ENV_EXEC="integration" ];
+if [ $ENV_EXEC = "integration" ];
 then
     export MYSQL_ENDPOINT=cuplatform_testmysql_1.mysql.cloud.unit
 else
@@ -31,7 +31,7 @@ term_handler() {
     /cloudunit/scripts/cu-stop.sh
 	/cloudunit/scripts/waiting-for-shutdown.sh java 30
 	rm -rf $CATALINA_BASE/logs/*
-	$JAVA_HOME/bin/java -jar /cloudunit/tools/cloudunitAgent-1.0-SNAPSHOT.jar SERVER $MYSQL_ENDPOINT $CU_DATABASE_NAME $CU_USER STOP $MANAGER_DATABASE_PASSWORD $ENV_EXEC
+	$JAVA_HOME/bin/java -jar /cloudunit/tools/cloudunitAgent-1.0-SNAPSHOT.jar SERVER $MYSQL_ENDPOINT $CU_DATABASE_NAME $CU_USER STOP $MANAGER_DATABASE_PASSWORD 
   fi
   if [ $pid2 -ne 0 ]; then
     kill -SIGTERM "$pid2"
@@ -42,9 +42,6 @@ term_handler() {
 trap 'kill ${!}; term_handler' SIGTERM
 
 if [ ! -f /init-service-ok ]; then
-
-	# variable signalant au manager quels scripts lancer
-	step=start
 
 	#################
 	# PREMIER APPEL #
@@ -98,9 +95,6 @@ else
         # purge des logs
         rm -rf /cloudunit/appconf/logs/*
 
-        # variable signalant au manager quels scripts lancer
-        step=restart
-
         # Redémarrage de openssh et tomcat
         echo "restarting"
         chown -R $1:$1 /cloudunit
@@ -119,7 +113,7 @@ done
 su - $CU_USER -c "/cloudunit/scripts/cu-start.sh" 
 
 # ENVOIE DE REST AU MANAGER
-$JAVA_HOME/bin/java -jar /cloudunit/tools/cloudunitAgent-1.0-SNAPSHOT.jar SERVER $MYSQL_ENDPOINT $CU_DATABASE_NAME $CU_USER START $MANAGER_DATABASE_PASSWORD
+$JAVA_HOME/bin/java -jar /cloudunit/tools/cloudunitAgent-1.0-SNAPSHOT.jar SERVER $MYSQL_ENDPOINT $CU_DATABASE_NAME $CU_USER START $MANAGER_DATABASE_PASSWORD 
 
 # The sshd pid could be double : father and son
 pid1=`pidof sshd | awk '{if ($2) {print $2;} else {print $1}}'`
