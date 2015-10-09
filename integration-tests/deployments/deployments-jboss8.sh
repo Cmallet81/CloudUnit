@@ -19,7 +19,8 @@ set -x
 sh ../reset.sh
 
 # run the integration test
-sh ../maven.sh *DeploymentControllerTestIT
+sh ../maven.sh JBoss88DeploymentControllerTestIT
+
 
 
 
