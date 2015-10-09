@@ -25,7 +25,7 @@ sudo pip install ansible
 git clone https://github.com/Treeptik/CU-infrastructure.git
 ```
 
-* **On the server**, create a user called `admincu` and add it to the sudo I group:
+* *On the server*, create a user called `admincu` and add it to the sudo I group:
 ```
 sudo adduser admincu
 sudo adduser admincu sudo
@@ -68,3 +68,6 @@ SUDO password[defaults to SSH password]:
 PLAY [CUserveur] ***********************************************************
 ```
 You are prompted for the ssh and sudo passwords of the `shinken` user.
+
+### Local DNS entry
+Finally, add a local DNS entry on your host: any address ending with server.cloudunit.io shoud point to the ip address of your server. Refere to the  [Local DNS section](https://github.com/Treeptik/CloudUnit/blob/master/documentation/DEMO-GUIDE.md#local-dns) to see how to achieve this on Ubuntu.
