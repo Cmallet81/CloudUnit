@@ -15,8 +15,23 @@ $ vagrant up
 
 The default box IP address is 192.168.50.4, but if you want it to be reachable on the network, uncomment the line `config.vm.network "public_network"` in the `Vagrantfile`.
 
+## Local DNS
+You need to add a local DNS entry pointing to the vagrant IP address. More precisely, any address ending with demo.cloudunit.io shoud point to `192.168.50.4`. On Ubuntu, a simple way to achieve this is to install dnsmasq:
+```
+$ sudo apt-get install dnsmasq
+```
+Then edit the file `/etc/dnsmasq.conf` and add the line:
+```
+address=/.demo.cloudunit.io/192.168.50.4
+```
+Finally, restart dnsmasq:
+```
+$ sudo service dnsmasq restart
+```
+
 ## Enjoy CloudUnit
 CloudUnit WebUI is available at the box IP. You can login with the credentials johndoe / abc2015.
 
 ![login](https://github.com/Treeptik/CloudUnit-images/blob/master/CU-login.png)
+
 
