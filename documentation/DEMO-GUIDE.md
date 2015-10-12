@@ -31,6 +31,7 @@ $ sudo service dnsmasq restart
 
 ## Enjoy CloudUnit
 CloudUnit WebUI is available at the box IP. You can login with the credentials johndoe / abc2015.
+URL entrypoint is https://demo.cloudunit.io(https://demo.cloudunit.io)
 
 ![login](https://github.com/Treeptik/CloudUnit-images/blob/master/CU-login.png)
 
