@@ -176,7 +176,7 @@ public abstract class AbstractApplicationControllerTestIT {
         resultats.andExpect(status().isOk());
     }
 
-    @Test(timeout = 30000)
+    @Test()
     public void test030_StartApplicationTest()
         throws Exception {
         logger.info("Start the application : " + applicationName);
@@ -186,7 +186,7 @@ public abstract class AbstractApplicationControllerTestIT {
         resultats.andExpect(status().isOk());
     }
 
-    @Test(timeout = 60000)
+    @Test()
     public void test040_ChangeJvmMemorySizeApplicationTest()
         throws Exception {
         logger.info("Change JVM Memory !");

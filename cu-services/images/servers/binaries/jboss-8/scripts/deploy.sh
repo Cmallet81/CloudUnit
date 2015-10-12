@@ -10,7 +10,7 @@ export WAR_PATH=/cloudunit/tmp
 rm  $JBOSS_HOME/standalone/deployments/*
 
 # Arrêt de java lancer par jboss
-$JBOSS_HOME/bin/jboss-cli.sh -c --user=$user --password=$CU_PASSWORD --command=:shutdown
+$JBOSS_HOME/bin/jboss-cli.sh -c --user=$CU_USER --password=$CU_PASSWORD --command=:shutdown
 
 # Attente de l'extinction de jboss
 RETURN=0

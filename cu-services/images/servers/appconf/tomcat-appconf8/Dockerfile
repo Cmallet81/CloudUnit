@@ -8,8 +8,8 @@ RUN wget https://github.com/Treeptik/cloudunit/releases/download/0.9/tomcat-appc
 # ajout du dossier lib-ext
 
 RUN mkdir -p /cloudunit/appconf/lib-ext
-RUN mkdir -p /cloudunit/appconf/scripts
 
+RUN mkdir -p /cloudunit/appconf/scripts
 ADD scripts/ /cloudunit/appconf/scripts
 RUN chmod +x /cloudunit/appconf/scripts/*
 

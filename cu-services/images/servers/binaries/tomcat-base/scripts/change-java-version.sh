@@ -24,7 +24,7 @@ fi
 source /etc/environment
 
 #Wait for server shutdown
-su - $CU_USER -c "/ps dcloudunit/scripts/waiting-for-shutdown.sh java 30"
+su - $CU_USER -c "/cloudunit/scripts/waiting-for-shutdown.sh java 30"
 
 # The server is down. We clean the logs
 # because they are stored into ElasticSearch
