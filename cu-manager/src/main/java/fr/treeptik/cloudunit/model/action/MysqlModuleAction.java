@@ -117,11 +117,16 @@ public class MysqlModuleAction
     }
 
     @Override
-    public List<String> createDockerCmdForClone(Map<String, String> map) {
-        return Arrays.asList(map.get("username"), map.get("password"), module.getModuleInfos().get("database"),
+    public List<String> createDockerCmdForClone(Map<String, String> map, String databasePassword, String envExec) {
+        return Arrays.asList(
+            map.get("username"),
+            map.get("password"),
+            module.getModuleInfos().get("database"),
             module.getApplication().getUser().getPassword(),
             module.getApplication().getRestHost(),
-            module.getApplication().getUser().getLogin());
+            module.getApplication().getUser().getLogin(),
+            databasePassword,
+            envExec);
     }
 
     @Override

@@ -322,9 +322,7 @@ public class SnapshotServiceImpl
         throws ServiceException {
 
         for (String key : snapshot.getAppConfig().keySet()) {
-
             try {
-
                 DockerContainer.pull(key, snapshot.getUniqueTagName(), dockerManagerIp);
                 Module module = ModuleFactory.getModule(snapshot.getAppConfig().get(key).getName());
                 module.setApplication(application);
@@ -333,15 +331,9 @@ public class SnapshotServiceImpl
                 module.setName(snapshot.getAppConfig().get(key).getName());
                 module = moduleService.initModule(application, module, snapshot.getUniqueTagName());
                 Map<String, String> properties = new HashMap<>();
-                properties.put("username",
-                    snapshot.getAppConfig().get(key).getProperties().get("username-"
-                        + module.getImage().getName()));
-                properties.put("password",
-                    snapshot.getAppConfig().get(key).getProperties().get("password-"
-                        + module.getImage().getName()));
-                properties.put("database",
-                    snapshot.getAppConfig().get(key).getProperties().get("database-"
-                        + module.getImage().getName()));
+                properties.put("username", snapshot.getAppConfig().get(key).getProperties().get("username-" + module.getImage().getName()));
+                properties.put("password", snapshot.getAppConfig().get(key).getProperties().get("password-" + module.getImage().getName()));
+                properties.put("database", snapshot.getAppConfig().get(key).getProperties().get("database-" + module.getImage().getName()));
                 module.setModuleInfos(properties);
                 module = moduleService.saveInDB(module);
                 moduleService.stopModule(module);
@@ -351,7 +343,6 @@ public class SnapshotServiceImpl
             } catch (DockerJSONException | CheckException | InterruptedException e) {
                 throw new ServiceException(e.getLocalizedMessage(), e);
             }
-
         }
     }
 

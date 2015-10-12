@@ -77,7 +77,8 @@ public class GitModuleAction
     }
 
     @Override
-    public List<String> createDockerCmdForClone(Map<String, String> map) {
+    public List<String> createDockerCmdForClone(Map<String, String> map,
+                                                String databasePassword, String envExec) {
         return new ArrayList<>();
     }
 

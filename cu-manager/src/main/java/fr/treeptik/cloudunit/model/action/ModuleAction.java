@@ -44,7 +44,7 @@ public abstract class ModuleAction
 
     public abstract List<String> createDockerCmd(String databasePassword, String envExec);
 
-    public abstract List<String> createDockerCmdForClone(Map<String, String> map);
+    public abstract List<String> createDockerCmdForClone(Map<String, String> map, String databasePassword, String envExec);
 
     /**
      * add url to access to module manager (e.g phpMyAdmin)

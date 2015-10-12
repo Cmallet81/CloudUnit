@@ -357,16 +357,17 @@ public class ModuleServiceImpl
             for (String key : snapshot.getAppConfig().keySet()) {
                 if (key.equalsIgnoreCase(module.getImage().getPath() + "-"
                     + module.getInstanceNumber() + "-data")) {
-                    logger.info("KEY : " + key);
-                    logger.info("MODULE : " + module.getImage().getPath() + "-"
-                        + module.getInstanceNumber() + "-data");
+
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("KEY : " + key);
+                        logger.debug("MODULE : " + module.getImage().getPath() + "-" + module.getInstanceNumber() + "-data");
+                    }
 
                     map.put("username",
                         snapshot.getAppConfig()
                             .get(key)
                             .getProperties()
-                            .get("username-"
-                                + module.getImage().getName()));
+                            .get("username-" + module.getImage().getName()));
                     map.put("password",
                         snapshot.getAppConfig()
                             .get(key)
@@ -377,8 +378,7 @@ public class ModuleServiceImpl
 
             }
 
-            commandesSpe.addAll(module.getModuleAction().createDockerCmdForClone(map));
-            commandesSpe.add("ok");
+            commandesSpe.addAll(module.getModuleAction().createDockerCmdForClone(map, databasePassword, envExec));
             dockerContainer.setCmd(commandesSpe);
         } else {
             dockerContainer.setCmd(module.getModuleAction().createDockerCmd(databasePassword, envExec));
