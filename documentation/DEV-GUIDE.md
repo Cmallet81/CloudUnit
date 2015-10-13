@@ -17,7 +17,11 @@ CloudUnit uses Docker and Java but others components. As pre-requisites, you nee
 
 ### Pre-requisites
 
-## Local DNS
+```
+Dnsmasq is a lightweight, easy to configure DNS forwarder and DHCP server […] is targeted at home networks[.]
+```
+
+#### Local DNS (Linux)
 
 You need to add a local DNS entry pointing to the vagrant IP address. More precisely, any address ending with demo.cloudunit.io shoud point to `192.168.50.4`. On Ubuntu, a simple way to achieve this is to install dnsmasq:
 ```
@@ -30,10 +34,26 @@ address=/admin.cloudunit.dev/192.168.50.4
 Finally, restart dnsmasq:
 ```
 $ sudo service dnsmasq restart
-
 ```
 
-### Pre-requisites
+#### Local DNS (MacOSX)
+
+You need to add a local DNS entry pointing to the vagrant IP address. More precisely, any address ending with demo.cloudunit.io shoud point to `192.168.50.4`. On Ubuntu, a simple way to achieve this is to install dnsmasq:
+```
+# Update your homebrew installation
+brew up
+# Install dnsmasq
+brew install dnsmasq
+```
+Then edit the file `/usr/local/etc/dnsmasq.conf` and add the line:
+```
+address=/admin.cloudunit.dev/192.168.50.4
+```
+Finally, start dnsmasq:
+```
+$ sudo launchctl start homebrew.mxcl.dnsmasq
+```
+For more information in this environment, please read this [article](http://passingcuriosity.com/2013/dnsmasq-dev-osx/)
 
 
 
