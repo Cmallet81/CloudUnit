@@ -17,18 +17,23 @@ CloudUnit uses Docker and Java but others components. As pre-requisites, you nee
 
 ### Pre-requisites
 
-* DNS Local resolver
-The ubuntu network mananger provided its own local DNS solutin. To begin, you need to disable it.
-So uncomment the following line for this config file : 
-```bash
-/etc/NetworkManager/NetworkManager.conf
-#dns=dnsmasq
+## Local DNS
+
+You need to add a local DNS entry pointing to the vagrant IP address. More precisely, any address ending with demo.cloudunit.io shoud point to `192.168.50.4`. On Ubuntu, a simple way to achieve this is to install dnsmasq:
 ```
-Unable the dnsmasq network manager at startup:
-```bash
-sudo update-rc.d -f dnsmasq remove
-````
-Start again the network manager:
-```bash
-sudo service network-manager restart
-````
+$ sudo apt-get install dnsmasq
+```
+Then edit the file `/etc/dnsmasq.conf` and add the line:
+```
+address=/admin.cloudunit.dev/192.168.50.4
+```
+Finally, restart dnsmasq:
+```
+$ sudo service dnsmasq restart
+
+```
+
+### Pre-requisites
+
+
+
