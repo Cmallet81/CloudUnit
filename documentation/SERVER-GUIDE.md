@@ -18,6 +18,7 @@ Unless specified, all the commands are to be run on your machine, and not on the
 ```bash
 sudo pip install markupsafe
 sudo pip install ansible
+sudo apt-get install sshpass
 ```
 
 * Clone the repository [CU-infrastructure](https://github.com/Treeptik/CU-infrastructure):
@@ -29,6 +30,7 @@ git clone https://github.com/Treeptik/CU-infrastructure.git
 ```
 sudo adduser admincu
 sudo adduser admincu sudo
+sudo apt-get install python
 ```
 
 ### CloudUnit
