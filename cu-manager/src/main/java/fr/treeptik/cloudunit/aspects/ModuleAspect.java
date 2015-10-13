@@ -95,7 +95,7 @@ public class ModuleAspect
 
             case deleteType:
                 module = (Module) joinPoint.getArgs()[2];
-                if (!module.getName().contains("git")) {
+                if (module != null && !module.getName().contains("git")) {
                     message = MessageUtils
                         .writeBeforeModuleMessage(user, module.getName(),
                             ((User) joinPoint.getArgs()[1]).getLogin(),

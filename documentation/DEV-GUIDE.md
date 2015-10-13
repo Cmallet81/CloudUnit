@@ -20,7 +20,7 @@ You need to install a local DNS for entry.
 Dnsmasq is a lightweight, easy to configure DNS forwarder and DHCP server […] is targeted at home networks[.]
 ```
 
-### Local DNS (Linux)
+### Local DNS (Linux Debian)
 
 You need to add a local DNS entry pointing to the vagrant IP address. More precisely, any address ending with admin.cloudunit.io shoud point to `192.168.50.4`. On Ubuntu, a simple way to achieve this is to install dnsmasq:
 ```
@@ -54,5 +54,11 @@ $ sudo launchctl start homebrew.mxcl.dnsmasq
 ```
 For more information in this environment, please read this [article](http://passingcuriosity.com/2013/dnsmasq-dev-osx/)
 
+### Grunt + Bower
+
+```
+sudo apt-get install npm
+sudo npm install -g n
+```
 
 

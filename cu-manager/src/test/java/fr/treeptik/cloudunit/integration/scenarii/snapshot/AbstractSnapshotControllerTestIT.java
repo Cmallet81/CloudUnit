@@ -91,7 +91,7 @@ public abstract class AbstractSnapshotControllerTestIT {
 
     @BeforeClass
     public static void initEnv() {
-        applicationName = "App" + new Random().nextInt(1000);
+        applicationName = "App" + new Random().nextInt(10000);
     }
 
     @Before
@@ -409,13 +409,13 @@ public abstract class AbstractSnapshotControllerTestIT {
         cloneASnapshotWithApplicationWithModuleAndADeployment("mysql-5-5", "pizzashop-mysql", "Pizzas");
     }
 
-    // @Test( timeout = 200000 )
+    @Test()
     public void test023_CloneAPostGresBasedApplicationSnapshot()
         throws Exception {
         cloneASnapshotWithApplicationWithModuleAndADeployment("postgresql-9-3", "pizzashop-postgres", "Pizzas");
     }
 
-    // @Test( timeout = 200000 )
+    @Test()
     public void test024_CloneAMongoBasedApplicationSnapshot()
         throws Exception {
         cloneASnapshotWithApplicationWithModuleAndADeployment("mongo-2-6", "mongo", "Country");

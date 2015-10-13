@@ -29,7 +29,6 @@ import fr.treeptik.cloudunit.utils.AuthentificationUtils;
 import fr.treeptik.cloudunit.utils.CheckUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,9 +64,6 @@ public class ApplicationController
     private AuthentificationUtils authentificationUtils;
 
     @Inject
-    private MessageSource messageSource;
-
-    @Inject
     private ApplicationManager applicationManager;
 
     /**
@@ -84,14 +80,13 @@ public class ApplicationController
     public JsonResponse isValid(@PathVariable String applicationName, @PathVariable String serverName)
         throws ServiceException, CheckException {
 
-        if (this.logger.isInfoEnabled()) {
-            this.logger.info("applicationName:" + applicationName);
-            this.logger.info("serverName:" + serverName);
+        if (logger.isInfoEnabled()) {
+            logger.info("applicationName:" + applicationName);
+            logger.info("serverName:" + serverName);
         }
 
-        CheckUtils.validateInput(applicationName,
-            this.messageSource.getMessage("check.app.name", null, Locale.ENGLISH));
-        CheckUtils.validateInput(serverName, this.messageSource.getMessage("check.server.name", null, Locale.ENGLISH));
+        CheckUtils.validateInput(applicationName, "check.app.name");
+        CheckUtils.validateInput(serverName, "check.server.name");
 
         applicationService.isValid(applicationName, serverName);
 
@@ -353,9 +348,8 @@ public class ApplicationController
         User user = this.authentificationUtils.getAuthentificatedUser();
         Application application = applicationService.findByNameAndUser(user, input.getApplicationName());
 
-        CheckUtils.validateInput(input.getApplicationName(),
-            messageSource.getMessage("check.app.name", null, Locale.ENGLISH));
-        CheckUtils.validateInput(input.getAlias(), messageSource.getMessage("check.alias.name", null, Locale.ENGLISH));
+        CheckUtils.validateInput(input.getApplicationName(), "check.app.name");
+        CheckUtils.validateInput(input.getAlias(), "check.alias.name");
 
         // We must be sure there is no running action before starting new one
         this.authentificationUtils.canStartNewAction(user, application, Locale.ENGLISH);

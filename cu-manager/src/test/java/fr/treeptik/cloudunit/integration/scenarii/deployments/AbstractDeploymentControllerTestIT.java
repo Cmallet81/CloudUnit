@@ -4,7 +4,6 @@ import fr.treeptik.cloudunit.exception.ServiceException;
 import fr.treeptik.cloudunit.initializer.CloudUnitApplicationContext;
 import fr.treeptik.cloudunit.model.User;
 import fr.treeptik.cloudunit.service.UserService;
-
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -32,14 +31,13 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.inject.Inject;
 import javax.servlet.Filter;
-
 import java.util.Random;
 
 import static fr.treeptik.cloudunit.utils.TestUtils.downloadAndPrepareFileToDeploy;
 import static fr.treeptik.cloudunit.utils.TestUtils.getUrlContentPage;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith( SpringJUnit4ClassRunner.class )
@@ -76,7 +74,7 @@ public abstract class AbstractDeploymentControllerTestIT
     @BeforeClass
     public static void initEnv()
     {
-        applicationName = "App" + new Random().nextInt( 1000 );
+        applicationName = "App" + new Random().nextInt(100000);
     }
 
     @Before
@@ -153,7 +151,7 @@ public abstract class AbstractDeploymentControllerTestIT
         deployApplicationWithModule( "mongo-2-6", "mongo", "Country" );
     }
 
-    private void deployApplicationWithModule( String module, String appName, String contentPage )
+    private void deployApplicationWithModule(String module, String appName, String keywordInPage)
         throws Exception
     {
         // add the module before deploying war
@@ -165,15 +163,21 @@ public abstract class AbstractDeploymentControllerTestIT
         // deploy the war
         logger.info( "Deploy an " + module + " based application" );
         resultats =
-            mockMvc.perform( MockMvcRequestBuilders.fileUpload( "/application/" + applicationName + "/deploy" ).file( downloadAndPrepareFileToDeploy( appName
-                                                                                                                                                          + ".war",
-                                                                                                                                                      "https://github.com/Treeptik/CloudUnit/releases/download/0.9/"
-                                                                                                                                                          + appName
-                                                                                                                                                          + ".war" ) ).session( session ).contentType( MediaType.MULTIPART_FORM_DATA ) ).andDo( print() );
+            mockMvc.perform(MockMvcRequestBuilders.fileUpload("/application/" + applicationName + "/deploy")
+                .file(downloadAndPrepareFileToDeploy(appName + ".war", "https://github.com/Treeptik/CloudUnit/releases/download/0.9/" + appName + ".war"))
+                .session(session).contentType(MediaType.MULTIPART_FORM_DATA))
+                .andDo(print());
         // test the application content page
         resultats.andExpect( status().is2xxSuccessful() );
         String urlToCall = "http://" + applicationName.toLowerCase() + "-johndoe-admin.cloudunit.dev";
-        Assert.assertTrue( getUrlContentPage( urlToCall ).contains( contentPage ) );
+        String contentPage = getUrlContentPage(urlToCall);
+        int counter = 0;
+        while (contentPage.contains("Welcome to WildFly") && counter++ < 10) {
+            contentPage = getUrlContentPage(urlToCall);
+            Thread.sleep(1000);
+        }
+        Assert.assertTrue(contentPage.contains(keywordInPage));
+
 
         // remove the module
         resultats =

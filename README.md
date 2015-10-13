@@ -27,14 +27,9 @@ There are many installation guides
 ## Usage examples
 
 There are many user guides
-* [Overview](https://github.com/Treeptik/cloudunit/blob/master/documentation/USER-GUIDE.md)
 * [Spring petclinic](https://github.com/Treeptik/cloudunit/blob/master/products/documentation/SPRINGPETCLINIC.md)
 * [GWT-DEMO](https://github.com/Treeptik/cloudunit/blob/master/products/documentation/GWT-DEMO.md)
 * [RollerBlog](https://github.com/Treeptik/cloudunit/blob/master/products/documentation/ROLLERBLOG.md)
-
-## Under the hood
-
-TODO : @NMU
 
 # Licensing
 

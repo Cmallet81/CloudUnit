@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.hibernate.validator.internal.util.Contracts.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -32,8 +33,8 @@ public class UserControllerTest {
 
     private final static Logger logger = LoggerFactory.getLogger(UserControllerTest.class);
 
-    private static final String PASSWORD = "password";
-    private static final String USERNAME = "user";
+    private static final String PASSWORD = "johndoe";
+    private static final String USERNAME = "abc2015";
 
     private UserController controller;
 
@@ -44,7 +45,7 @@ public class UserControllerTest {
         controller = new UserController();
 
         securityContextUtilMock = mock(SecurityContextUtil.class);
-        //ReflectionTestUtils.setField(controller, "securityContextUtil", securityContextUtilMock);
+        ReflectionTestUtils.setField(controller, "securityContextUtil", securityContextUtilMock);
     }
 
     @Test

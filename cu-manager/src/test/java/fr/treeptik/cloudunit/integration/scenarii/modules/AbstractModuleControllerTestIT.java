@@ -55,7 +55,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Created by nicolas on 08/09/15.
+ * Tests for Module lifecycle
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
